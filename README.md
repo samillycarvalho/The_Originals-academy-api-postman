@@ -57,4 +57,6 @@ Clone o repositório
 4 - Para carregar as alterações do Git
 ```bash
  git push
-```        # The_Originals-academy-api-postman
+```        
+## Projeto desenvolvido por:
+- [@samillycarvalho](https://www.linkedin.com/in/s%C3%A2milly-carvalho-444638226/)
