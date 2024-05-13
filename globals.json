@@ -1,0 +1,165 @@
+{
+	"id": "c4af194e-a8a6-4dbb-8a62-eb0e9bd328c7",
+	"values": [
+		{
+			"key": "Password",
+			"value": "1234@Test",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "MsgFullNameRequerid",
+			"value": "O campo nome completo é obrigatório.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgFullNameRequerid@",
+			"value": "Informe o nome e sobrenome com as iniciais em letra maiúscula e sem caracteres especiais.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgFullNameRequeridNumeros1",
+			"value": "O campo nome completo não deve conter números",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgFullNameRequerid101",
+			"value": "O nome completo deve ter no máximo 100 caracteres.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgMailRequerid",
+			"value": "O campo e-mail é obrigatório.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgMailRequeridFormat",
+			"value": "O e-mail informado é inválido. Informe um e-mail no formato [nome@domínio.com].",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgMailRequeridDomini",
+			"value": "O e-mail informado é inválido. Informe um e-mail no formato [nome@domínio.com].",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgMailRequeriddominiInvalid",
+			"value": "O e-mail informado é inválido. Informe um e-mail no formato [nome@domínio.com].",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgPasswordMandatory",
+			"value": "O campo senha é obrigatório",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgPassword7caractere",
+			"value": "Senha precisa ter: uma letra maiúscula, uma letra minúscula, um número, um caractere especial(@#$%) e tamanho entre 8-12.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgPassword13caractere",
+			"value": "Senha precisa ter: uma letra maiúscula, uma letra minúscula, um número, um caractere especial(@#$%) e tamanho entre 8-12.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgConfirmPasswordMandatory",
+			"value": "O campo de confirmação de senha é obrigatório.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "Msgconfirmsenhadiferente",
+			"value": "As senhas não coincidem.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgperfildeacessoMandatory",
+			"value": "O campo perfil de acesso é obrigatório.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgPerfilDeAcessoInvalido",
+			"value": "O campo perfil de acesso deve ser preenchido de acordo com o seu cargo exemplo: ADMIN.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgCPFmandatory",
+			"value": "O campo CPF é obrigatório!",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgCPF10numeros",
+			"value": "Deve preencher o CPF com 11 dígitos",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgCPF12numeros",
+			"value": "Deve preencher o CPF com 11 dígitos",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgDepartamnetoobrigart",
+			"value": "O campo 'departamento' é obrigatório.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "Msgdepartment#",
+			"value": "O campo 'departamento' só pode conter letras e o caractere especial '&'.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgDepartamnumero1",
+			"value": "O campo 'departamento' só pode conter letras e o caractere especial '&'.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgDepartamjacadastrado",
+			"value": "Não é possível salvar esse registro. Departamento já cadastrado no sistema.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgDiretoria@",
+			"value": "O campo 'diretoria' só pode conter letras e o caractere especial '&'.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgDiretoria3",
+			"value": "O campo 'diretoria' só pode conter letras e o caractere especial '&'.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "MsgDiretoriajacadastrada",
+			"value": "Não é possível salvar esse registro. Diretoria já cadastrada no sistema.",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2024-05-09T21:25:46.668Z",
+	"_postman_exported_using": "Postman/10.24.15"
+}

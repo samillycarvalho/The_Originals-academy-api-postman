@@ -1,0 +1,285 @@
+{
+	"id": "17b3cd50-8e2c-42d5-9801-98dfebaa130a",
+	"name": "QA",
+	"values": [
+		{
+			"key": "url",
+			"value": "https://the-originals.qacoders-academy.com.br/Api",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "FirstName",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "LastName",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "FullName",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "ProviderMail",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Mail",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "AccessProfile",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "CPF",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgFullNameRequerid",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgPasswordMandatory",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "tokenUser",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgFullNameRequerid@",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgPassword7caractere",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgMailRequeriddominiInvalid",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgMailRequeridDomini",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgMailRequeridFormat",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgMailRequerid",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgFullNameRequerid101",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgFullNameRequerid1",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgPerfilDeAcessoInvalido",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgperfildeacessoMandatory",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_Msgconfirmsenhadiferente",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgConfirmPasswordMandatory",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgCPFmandatory",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgCPF10numeros",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgCPF12numeros",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_Password",
+			"value": "1234@Test",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "CostcenterId",
+			"value": "65855af6a2d3ae70485da0b7",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "Department",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "DERPATMENT",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_Msgdepartment#",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgDepartamnumero1",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgDepartamjacadastrado",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Diretoria",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgDiretoria@",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgDiretoria3",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgDiretoriajacadastrada",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "_MsgDepartamnetoobrigart",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "DEPARTMENT",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "department",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Board",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "BOARD",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "board",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "Board&",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-05-09T21:25:20.804Z",
+	"_postman_exported_using": "Postman/10.24.15"
+}

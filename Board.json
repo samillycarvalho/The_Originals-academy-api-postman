@@ -1,0 +1,580 @@
+{
+	"info": {
+		"_postman_id": "77c0e409-7c23-4d48-858a-ae72d52aa628",
+		"name": "Board",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28120711"
+	},
+	"item": [
+		{
+			"name": "Casos de testes Board",
+			"item": [
+				{
+					"name": "1-Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"token\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mail\": \"sysadmin@qacoders.com\",\n  \"password\": \"1234@Test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "validatetoken",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/validateToken",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"validateToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "criar diretoria",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function palavraAleatoria(comprimento) {",
+									"    const letras = 'AbCdEfGhImNOpQrStUvWxYz'; // Define as letras disponíveis",
+									"    let palavra = '';",
+									"    for (let i = 0; i < comprimento; i++) {",
+									"        const indice = Math.floor(Math.random() * letras.length); // Gera um índice aleatório",
+									"        palavra += letras.charAt(indice); // Adiciona a letra correspondente ao índice à palavra",
+									"    }",
+									"    return palavra;",
+									"}",
+									"",
+									"function Diretoria() {",
+									"    return palavraAleatoria(14); // Gera uma palavra aleatória com 10 letras",
+									"}",
+									"",
+									"pm.environment.set(\"Board\", Diretoria());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"boardName\": \"{{Board}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/board/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"board",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Diretoria ja cadastrada",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"_MsgDiretoriajacadastrada\", pm.globals.get(\"MsgDiretoriajacadastrada\"))"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});",
+									"pm.test(\"check msg:Não é possível salvar esse registro. Diretoria já cadastrada no sistema.\", function(){",
+									"    pm.expect(pm.globals.get(\"MsgDiretoriajacadastrada\")).to.eql(JSON.parse(responseBody).alert[0]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"boardName\": \"{{Board}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/board/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"board",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DIretoria com letras maiúsculas",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function palavraAleatoria(comprimento) {",
+									"    const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Define as letras disponíveis",
+									"    let palavra = '';",
+									"    for (let i = 0; i < comprimento; i++) {",
+									"        const indice = Math.floor(Math.random() * letras.length); // Gera um índice aleatório",
+									"        palavra += letras.charAt(indice); // Adiciona a letra correspondente ao índice à palavra",
+									"    }",
+									"    return palavra;",
+									"}",
+									"",
+									"function Diretoria() {",
+									"    return palavraAleatoria(14); // Gera uma palavra aleatória com 10 letras",
+									"}",
+									"",
+									"pm.environment.set(\"BOARD\", Diretoria());",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"boardName\": \"{{BOARD}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/board/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"board",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DIretoria com letras minúsculas",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function palavraAleatoria(comprimento) {",
+									"    const letras = 'abcdefghijklmnopqrstuvwxyz'; // Define as letras disponíveis",
+									"    let palavra = '';",
+									"    for (let i = 0; i < comprimento; i++) {",
+									"        const indice = Math.floor(Math.random() * letras.length); // Gera um índice aleatório",
+									"        palavra += letras.charAt(indice); // Adiciona a letra correspondente ao índice à palavra",
+									"    }",
+									"    return palavra;",
+									"}",
+									"",
+									"function Board() {",
+									"    return palavraAleatoria(14); // Gera uma palavra aleatória com 10 letras",
+									"}",
+									"",
+									" pm.environment.set(\"board\", Board());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"boardName\": \"{{board}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/board/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"board",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DIretoria com caractere &",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function palavraAleatoria(comprimento) {",
+									"    const letras = 'AbCdEfGhImNOpQrStUvWxYz&'; // Define as letras disponíveis",
+									"    let palavra = '';",
+									"    for (let i = 0; i < comprimento; i++) {",
+									"        const indice = Math.floor(Math.random() * letras.length); // Gera um índice aleatório",
+									"        palavra += letras.charAt(indice); // Adiciona a letra correspondente ao índice à palavra",
+									"    }",
+									"    return palavra;",
+									"}",
+									"",
+									"function Diretoria() {",
+									"    return palavraAleatoria(27); // Gera uma palavra aleatória com 10 letras",
+									"}",
+									"",
+									"pm.environment.set(\"Board&\", Diretoria());",
+									" ",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"boardName\": \"{{Board&}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/board/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"board",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DIretoria com caracteres",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"_MsgDiretoria@\", pm.globals.get(\"MsgDiretoria@\"))"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"check msg:O campo 'diretoria' só pode conter letras e o caractere especial '&'.\", function(){",
+									"    pm.expect(pm.globals.get(\"MsgDiretoria@\")).to.eql(JSON.parse(responseBody).error[0]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"boardName\": \"Diretoria@#\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/board/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"board",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DIretoria com numeros",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"_MsgDiretoria3\", pm.globals.get(\"MsgDiretoria3\"))"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"check msg:O campo 'diretoria' só pode conter letras e o caractere especial '&'.\", function(){",
+									"    pm.expect(pm.globals.get(\"MsgDiretoria3\")).to.eql(JSON.parse(responseBody).error[0]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"boardName\": \"Diretoria99\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/board/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"board",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listar diretoria",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/board/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"board",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{token}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

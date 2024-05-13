@@ -1,0 +1,39 @@
+name: Login
+
+on: 
+
+  push:
+   branches: [ "main" ]
+  pull_request:
+   branches: [ "main" ]
+
+  workflow_dispatch: 
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Step 1 Check version Newman and Node
+        run: |
+          newman --version
+          node --version
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Step 2 Install Newman-Reporter-Htmlextra
+        run: npm install -g newman-reporter-htmlextra
+
+
+
+      - name: Step 3 Execute collection
+        run: newman run ./Department.json -e ./QA.json -g ./globals.json -r htmlextra --reporter-htmlextra-export ./result_Departamento/report.html
+
+      - name: Step 4 Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: ./result_Departamento/**

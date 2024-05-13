@@ -1,0 +1,3796 @@
+{
+	"info": {
+		"_postman_id": "823722be-16f5-4d19-ae4f-1466e460bd14",
+		"name": "Users",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28120711"
+	},
+	"item": [
+		{
+			"name": "Casos de teste",
+			"item": [
+				{
+					"name": "FullName",
+					"item": [
+						{
+							"name": "1-Login Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"token\", pm.response.json().token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mail\": \"sysadmin@qacoders.com\",\n  \"password\": \"1234@Test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo FullName com caractere especiais",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"pm.variables.set(\"_MsgFullNameRequerid@\", pm.globals.get(\"MsgFullNameRequerid@\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											" ",
+											"pm.test(\"check msg: Informe o nome e sobrenome com as iniciais em letra maiúscula.\", function(){",
+											"    pm.expect(pm.globals.get(\"MsgFullNameRequerid@\")).to.eql(JSON.parse(responseBody).error[0]);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"Teste@ Teste# \",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo FullName com numeros",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"",
+											"pm.test(\"check msg: O campo nome completo não deve conter números.\", function(){",
+											"    pm.expect(pm.globals.get(\"MsgFullNameRequeridNumeros1\")).to.eql(JSON.parse(responseBody).error[0]);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"",
+											"pm.environment.set(\"_MsgFullNameRequerid1\", pm.globals.get(\"MsgFullNameRequerid1\"))"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"Teste1 Test2\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo FullName com 101 caractere",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"",
+											"pm.environment.set(\"_MsgFullNameRequerid101\", pm.globals.get(\"MsgFullNameRequerid101\"))"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"",
+											"pm.test(\"check msg:O nome completo deve ter no máximo 100 caracteres.\", function(){",
+											"    pm.expect(pm.globals.get(\"MsgFullNameRequerid101\")).to.eql(JSON.parse(responseBody).error[0]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"Jussara Maria Mariana Muriá da Silva Penha dos Santos Sousa Oliveira Alves Carvalho Maia Marianoconsi\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo FullName obrigátorio",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"pm.environment.set(\"_MsgFullNameRequerid\", pm.globals.get(\"MsgFullNameRequerid\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"check msg: O campo nome completo é obrigatório.\", function(){",
+											"    pm.expect(pm.globals.get(\"MsgFullNameRequerid\")).to.eql(JSON.parse(responseBody).error[0]);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{   \"fullName\": \"\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo FullName com 99 caractere",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"",
+											"pm.test(\"check is mail true\", function(){",
+											"    pm.expect(pm.environment.get(\"Mail\")).to.eql(JSON.parse(responseBody).user.mail);",
+											"})",
+											"",
+											"pm.test(\"check is accessProfile true\", function(){",
+											"    pm.expect(pm.environment.get(\"AccessProfile\")).to.eql(JSON.parse(responseBody).user.accessProfile);",
+											"})",
+											"",
+											"pm.test(\"check is cpf true\", function(){",
+											"    pm.expect(pm.environment.get(\"CPF\")).to.eql (JSON.parse(responseBody).user.cpf);",
+											"",
+											"})",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"Fussara Maria Mariana Muriá da Silva Penha dos Santos Sousa Oliveira Alves Carvalho Maia Marianocon\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo FullName com 100 caractere",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"check is mail true\", function(){",
+											"    pm.expect(pm.environment.get(\"Mail\")).to.eql(JSON.parse(responseBody).user.mail);",
+											"})",
+											"",
+											"pm.test(\"check is accessProfile true\", function(){",
+											"    pm.expect(pm.environment.get(\"AccessProfile\")).to.eql(JSON.parse(responseBody).user.accessProfile);",
+											"})",
+											"",
+											"pm.test(\"check is cpf true\", function(){",
+											"    pm.expect(pm.environment.get(\"CPF\")).to.eql (JSON.parse(responseBody).user.cpf);",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"Fussara Maria Mariana Muriá da Silva Penha dos Santos Sousa Oliveira Alves Carvalho Maia Marianocons\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Email",
+					"item": [
+						{
+							"name": "1-Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"token\", pm.response.json().token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mail\": \"sysadmin@qacoders.com\",\n  \"password\": \"1234@Test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo E-mail em branco",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											"",
+											"   let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"",
+											"pm.environment.set(\"_MsgMailRequerid\", pm.globals.get(\"MsgMailRequerid\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"check msg: O campo e-mail é obrigatório.\", function(){",
+											"    pm.expect(pm.globals.get(\"MsgMailRequerid\")).to.eql(JSON.parse(responseBody).error[0]);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo E-mail com espaço no nome",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											"",
+											"  let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"",
+											"pm.environment.set(\"_MsgMailRequeridFormat\", pm.globals.get(\"MsgMailRequeridFormat\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"check msg: O e-mail informado é inválido. Informe um e-mail no formato [nome@domínio.com].\", function(){pm.expect(pm.globals.get(\"MsgMailRequeridFormat\")).to.eql(JSON.parse(responseBody).error[0]);",
+											"",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"Jussara @dominio.com\",\n     \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo E-mail com espaço dominio",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											"",
+											"   let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"",
+											"pm.environment.set(\"_MsgMailRequeridDomini\", pm.globals.get(\"MsgMailRequeridDomini\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"check msg: O e-mail informado é inválido. Informe um e-mail no formato [nome@domínio.com].\", function(){pm.expect(pm.globals.get(\"MsgMailRequeridDomini\")).to.eql(JSON.parse(responseBody).error[0]);",
+											"",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"Jussara@dom inio.com\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo E-mail com dominio inválido",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											"",
+											" let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"",
+											"pm.environment.set(\"_MsgMailRequeriddominiInvalid\", pm.globals.get(\"MsgMailRequeriddominiInvalid\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"check msg: O e-mail informado é inválido. Informe um e-mail no formato [nome@domínio.com].\", function(){pm.expect(pm.globals.get(\"MsgMailRequeriddominiInvalid\")).to.eql(JSON.parse(responseBody).error[0]);",
+											"",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"Jussara@.com\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Password",
+					"item": [
+						{
+							"name": "1-Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"token\", pm.response.json().token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mail\": \"sysadmin@qacoders.com\",\n  \"password\": \"1234@Test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "o campo Password em branco",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											"",
+											"  let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\",\"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random()*providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\")+\"_\"+pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"",
+											"pm.environment.set(\"_MsgPasswordMandatory\", pm.globals.get(\"MsgPasswordMandatory\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Msg: O campo senha é obrigatório\" ,function(){pm.expect(pm.globals.get(\"MsgPasswordMandatory\")).to.eql(JSON.parse(responseBody).error[0])",
+											"",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "o campo Password com 13 caractere",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Msg: Senha precisa ter: uma letra maiúscula, uma letra minúscula, um número, um caractere especial(@#$%) e tamanho entre 8-12.\" ,function(){pm.expect(pm.globals.get(\"MsgPassword13caractere\")).to.eql(JSON.parse(responseBody).error[0])",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											"",
+											" let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											" ",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\",\"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random()*providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\")+\"_\"+pm.variables.replaceIn('{{$guid}}')+pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"pm.environment.set(\"_MsgFullNameRequerid@\", pm.globals.get(\"MsgFullNameRequerid@\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"123456@Testest\",\n    \"confirmPassword\": \"123456@Testest\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "o campo Password com 7 caractere",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											"",
+											" let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"",
+											"pm.environment.set(\"_MsgPassword7caractere\", pm.globals.get(\"MsgPassword7caractere\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Msg:Senha precisa ter: uma letra maiúscula, uma letra minúscula, um número, um caractere especial(@#$%) e tamanho entre 8-12.\" ,function(){pm.expect(pm.globals.get(\"MsgPassword7caractere\")).to.eql(JSON.parse(responseBody).error[0])",
+											"",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"1a3#asD\",\n    \"confirmPassword\": \"1a3#asD\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "o campo Password com 8 caractere",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"    function firstName() {",
+											"",
+											" let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											" ",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))",
+											"pm.environment.set(\"CPF\", cpf());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"12345@Te\",\n    \"confirmPassword\": \"12345@Te\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ConfirPassword",
+					"item": [
+						{
+							"name": "1-Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"token\", pm.response.json().token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mail\": \"sysadmin@qacoders.com\",\n  \"password\": \"1234@Test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo confirmar senha em branco",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"    function firstName() {",
+											"",
+											" let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"pm.environment.set(\"_MsgConfirmPasswordMandatory\", pm.globals.get(\"MsgConfirmPasswordMandatory\"))",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Msg:O Campo confirmar senha é obrigatório.\" ,function(){pm.expect(pm.globals.get(\"MsgConfirmPasswordMandatory\")).to.eql(JSON.parse(responseBody).error[0])",
+											"",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo confirmar senha diferente do campo senha",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"    function firstName() {",
+											"",
+											" let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"pm.environment.set(\"_Msgconfirmsenhadiferente\", pm.globals.get(\"Msgconfirmsenhadiferente\"))",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Msg:As senhas não coincidem.\" ,function(){pm.expect(pm.globals.get(\"Msgconfirmsenhadiferente\")).to.eql(JSON.parse(responseBody).error[0])",
+											"",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"234Rghm@\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo confirmar senha igual ao campo senha",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"    function firstName() {",
+											"",
+											"  let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "AccessProfile",
+					"item": [
+						{
+							"name": "1-Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"token\", pm.response.json().token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mail\": \"sysadmin@qacoders.com\",\n  \"password\": \"1234@Test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "O campo Perfil de acesso é obrigatório",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"    function firstName() {",
+											"",
+											"  let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"pm.environment.set(\"_MsgperfildeacessoMandatory\", pm.globals.get(\"MsgperfildeacessoMandatory\"))",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Msg:O campo perfil de acesso é obrigatório.\" ,function(){pm.expect(pm.globals.get(\"MsgperfildeacessoMandatory\")).to.eql(JSON.parse(responseBody).error[0])",
+											"",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "O campo Perfil de acesso inválido",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"    function firstName() {",
+											"",
+											"  let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"pm.environment.set(\"_MsgPerfilDeAcessoInvalido\", pm.globals.get(\"MsgPerfilDeAcessoInvalido\"))",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Msg:O campo perfil de acesso deve ser preenchido de acordo com o seu cargo exemplo: ADMIN.\" ,function(){pm.expect(pm.globals.get(\"MsgPerfilDeAcessoInvalido\")).to.eql(JSON.parse(responseBody).error[0])",
+											"",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"ADMINISTRADOR\",\n    \"cpf\": \"{{CPF}}\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CPF",
+					"item": [
+						{
+							"name": "1-Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"token\", pm.response.json().token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mail\": \"sysadmin@qacoders.com\",\n  \"password\": \"1234@Test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo cpf é obrigátorio",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											"",
+											"  let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"pm.environment.set(\"_MsgCPFmandatory\", pm.globals.get(\"MsgCPFmandatory\"))",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Msg:O campo CPF é obrigatório!\" ,function(){pm.expect(pm.globals.get(\"MsgCPFmandatory\")).to.eql(JSON.parse(responseBody).error[0])",
+											"",
+											"})",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo cpf com 10 numeros",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											"",
+											" let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"pm.environment.set(\"_MsgCPF10numeros\", pm.globals.get(\"MsgCPF10numeros\"))",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Msg:Deve preencher o CPF com 11 dígitos\" ,function(){pm.expect(pm.globals.get(\"MsgCPF10numeros\")).to.eql(JSON.parse(responseBody).error[0])",
+											"",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"1234567892\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "campo cpf com 12 numeros",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function firstName() {",
+											" let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+											"",
+											"",
+											"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"   pm.environment.set(\"FirstName\", firstName());",
+											"",
+											"   function lastName() {",
+											"",
+											"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+											"",
+											"",
+											"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+											"",
+											"      return randomItem;",
+											"    ",
+											"}",
+											" ",
+											"pm.environment.set(\"LastName\", lastName());",
+											"",
+											"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+											"",
+											"function accessProfile() {",
+											"",
+											"    let accessProfile = [\"ADMIN\"];",
+											"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											" pm.environment.set(\"AccessProfile\", accessProfile());",
+											"",
+											"function providerMail() {",
+											"",
+											"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+											"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+											"",
+											"      return randomItem;",
+											"",
+											"}",
+											"",
+											"pm.environment.set(\"ProviderMail\", providerMail());",
+											"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+											"",
+											"function cpf() {",
+											"    let cpf = '';",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        cpf += Math.floor(Math.random() * 10);",
+											"    }",
+											"",
+											"    let sum = 0;",
+											"    let weight = 10;",
+											"",
+											"    for (let i = 0; i < 9; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit1 = 11 - (sum % 11);",
+											"    if (digit1 === 10 || digit1 === 11) {",
+											"        digit1 = 0;",
+											"    }",
+											"",
+											"    cpf += digit1;",
+											"",
+											"    sum = 0;",
+											"    weight = 11;",
+											"",
+											"    for (let i = 0; i < 10; i++) {",
+											"        sum += parseInt(cpf[i]) * weight;",
+											"        weight--;",
+											"    }",
+											"",
+											"    let digit2 = 11 - (sum % 11);",
+											"    if (digit2 === 10 || digit2 === 11) {",
+											"        digit2 = 0;",
+											"    }",
+											"",
+											"    cpf += digit2;",
+											"",
+											"    return cpf;",
+											"}",
+											"",
+											"pm.environment.set(\"CPF\", cpf());",
+											"pm.environment.set(\"_MsgCPF12numeros\", pm.globals.get(\"MsgCPF12numeros\"))",
+											"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Msg:Deve preencher o CPF com 11 dígitos\" ,function(){pm.expect(pm.globals.get(\"MsgCPF12numeros\")).to.eql(JSON.parse(responseBody).error[0])",
+											"",
+											"})",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"123456789012\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/user/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "1-Login sysadim",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"token\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mail\": \"sysadmin@qacoders.com\",\n  \"password\": \"1234@Test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastro de usuário",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function firstName() {",
+									"   let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+									"",
+									"",
+									"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+									"",
+									"      return randomItem;",
+									"    ",
+									"}",
+									" ",
+									"   pm.environment.set(\"FirstName\", firstName());",
+									"",
+									"   function lastName() {",
+									"",
+									"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+									"",
+									"",
+									"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+									"",
+									"      return randomItem;",
+									"    ",
+									"}",
+									" ",
+									"pm.environment.set(\"LastName\", lastName());",
+									"",
+									"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+									"",
+									"function accessProfile() {",
+									"",
+									"    let accessProfile = [\"ADMIN\"];",
+									"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+									"",
+									"      return randomItem;",
+									"",
+									"}",
+									" pm.environment.set(\"AccessProfile\", accessProfile());",
+									"",
+									"function providerMail() {",
+									"",
+									"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+									"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+									"",
+									"      return randomItem;",
+									"",
+									"}",
+									"",
+									"pm.environment.set(\"ProviderMail\", providerMail());",
+									"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+									"",
+									"function cpf() {",
+									"    let cpf = '';",
+									"",
+									"    for (let i = 0; i < 9; i++) {",
+									"        cpf += Math.floor(Math.random() * 10);",
+									"    }",
+									"",
+									"    let sum = 0;",
+									"    let weight = 10;",
+									"",
+									"    for (let i = 0; i < 9; i++) {",
+									"        sum += parseInt(cpf[i]) * weight;",
+									"        weight--;",
+									"    }",
+									"",
+									"    let digit1 = 11 - (sum % 11);",
+									"    if (digit1 === 10 || digit1 === 11) {",
+									"        digit1 = 0;",
+									"    }",
+									"",
+									"    cpf += digit1;",
+									"",
+									"    sum = 0;",
+									"    weight = 11;",
+									"",
+									"    for (let i = 0; i < 10; i++) {",
+									"        sum += parseInt(cpf[i]) * weight;",
+									"        weight--;",
+									"    }",
+									"",
+									"    let digit2 = 11 - (sum % 11);",
+									"    if (digit2 === 10 || digit2 === 11) {",
+									"        digit2 = 0;",
+									"    }",
+									"",
+									"    cpf += digit2;",
+									"",
+									"    return cpf;",
+									"}",
+									"",
+									"pm.environment.set(\"CPF\", cpf());",
+									"",
+									"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"check is fullName true\", function(){",
+									"    pm.expect(pm.environment.get(\"FullName\")).to.eql(JSON.parse(responseBody).user.fullName);",
+									"})",
+									"",
+									"pm.test(\"check is mail true\", function(){",
+									"    pm.expect(pm.environment.get(\"Mail\")).to.eql(JSON.parse(responseBody).user.mail);",
+									"})",
+									"",
+									"pm.test(\"check is accessProfile true\", function(){",
+									"    pm.expect(pm.environment.get(\"AccessProfile\")).to.eql(JSON.parse(responseBody).user.accessProfile);",
+									"})",
+									"",
+									"pm.test(\"check is cpf true\", function(){",
+									"    pm.expect(pm.environment.get(\"CPF\")).to.eql (JSON.parse(responseBody).user.cpf);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login do usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"check is token exist\", function(){",
+									"  pm.expect(JSON.parse(responseBody).token).to.exist;",
+									"})",
+									"",
+									"pm.test(\"check is fullName true\", function(){",
+									"    pm.expect(pm.environment.get(\"FullName\")).to.eql(JSON.parse(responseBody).user.fullName);",
+									"})",
+									"",
+									"pm.test(\"check is mail true\", function(){",
+									"    pm.expect(pm.environment.get(\"Mail\")).to.eql(JSON.parse(responseBody).user.mail);",
+									"})",
+									"",
+									"pm.test(\"check is accessProfile true\", function(){",
+									"    pm.expect(pm.environment.get(\"AccessProfile\")).to.eql(JSON.parse(responseBody).user.accessProfile);",
+									"})",
+									"",
+									"pm.test(\"check is status true\", function(){",
+									"    pm.expect(true).to.eql (JSON.parse(responseBody).user.status);",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "novo cadastro de login-sucesso",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function firstName() {",
+							"",
+							"       let firstName = [\"William\",\"Melissa\",\"Pablo\",\"JoaoVitor\",\"Vitor\",\"Hugo\",\"Arthur\",\"Maxon\",\"Maelle\",\"Maerica\",\"Ammy\",\"Coraline\",\"Juca\",\"Lucas\",\"Fernando\",\"Fernanda\",\"Angelica\",\"Laura\",\"Larissa\",\"Sterfane\",\"Stella\",\"Daniele\",\"Brenda\",\"Beatriz\",\"Juliene\",\"Julieta\",\"Maxine\",\"Maria\",\"Merie\",\"Tatiane\",\"Jucelino\",\"Vanderson\",\"Valon\",\"Vanessa\",\"Vannessa\",\"Villany\",\"Cassia\",\"Cassiano\",\"Bento\",\"Bianca\",\"Lucinda\",\"Jucelia\",\"Jucileia\",\"Pedro\",\"Carla\",\"Raissa\",\"Cassandra\",\"Sara\",\"Jusssara\",\"Cecilia\",\"Samilly\",\"Sanny\",\"Luara\",\"Cesar\",\"Vinicios\",\"Ramon\",\"Hayton\",\"JoaoHerbet\",\"Wendy\",\"Layra\",\"Carlos\",\"Daniel\",\"Hamillet\",\"Romeu\",\"Kaio\",\"Clara\",\"Clarita\",\"Virnoka\",\"Clariane\",\"Funny\",\"Sammy\",\"Sanira\",\"Taina\",\"Celia\",\"Cece\",\"Ive\",\"Marlena\",\"Madalena\",\"Bella\",\"Gigi\",\"Georgia\",\"GigiHadid\",\"BellaHadid\",\"Barbara\",\"Tamara\",\"Tacila\",\"Jurema\",\"Joziane\",\"Josie\",\"Helena\",\"Elena\",\"Elaja\",\"Niklaus\",\"Rebeka\",\"Koll\",\"Karleio\",\"Alice\",\"Aline\",\"Ammy\",\"Kimberly\",\"Kim\",\"Kylie\",\"Kendall\",\"Elizabeth\",\"Jenna\",\"Selena\",\"Hailley\",\"Hellem\",\"Jenny\",\"Blair\",\"Serena\",\"Lariss\",\"Lana\",\"Lane\",\"Lanita\",\"Haily\",\"Tommy\",\"Josias\",\"Jesus\",\"Ammylee\",\"Bety\",\"Bruna\",\"Valen\",\"Valentina\",\"Sophie\",\"Sonny\",\"Sol\",\"Lua\",\"Lina\",\"Luna\",\"Soli\",\"Salina\",\"Giselie\",\"Annamara\",\"Haine\",\"Milena\",\"Liasa\",\"Laisa\",\"Lalaliza\",\"Hunoo\",\"Somyn\",\"Suho\",\"Kaio\",\"Klarita\",\"Samita\",\"Sara\",\"Viena\",\"Siena\",\"Danie\",\"Gala\",\"Lady\",\"Fabiana\",\"Andrea\",\"Andre\",\"Marie\",\"Mari\",\"Francine\",\"Pame\",\"Juciene\",\"Lauren\",\"Lorena\",\"Lorelay\",\"Rory\",\"Julie\",\"Beck\",\"Olivia\",\"Haitor\",\"Tinken\",\"Danielle\",\"Gabi\",\"Kimb\",\"Arieca\",\"Ariela\",\"Angel\",\"Loki\",\"Theo\",\"Leo\",\"Thor\",\"Gosth\"];",
+							"",
+							"    let randomItem = firstName[Math.floor(Math.random() * firstName.length)];",
+							"",
+							"      return randomItem;",
+							"    ",
+							"}",
+							" ",
+							"   pm.environment.set(\"FirstName\", firstName());",
+							"",
+							"   function lastName() {",
+							"",
+							"    let lastName = [\"Alves\",\"Passos de Sousa\",\"Duarte Silva\",\"Irvine de Oliveira\",\"Clarck\",\"Alonso\",\"Afonso\",\"Rossi\",\"Esposito\",\"Russo\",\"Romano\",\"Brancos\",\"Ferrari\",\"Bianchi\",\"Marinho\",\"Giordano\",\"De Luca\",\"Bruno\",\"Rizzo\",\"Galo\",\"Ricci\",\"Caruso\",\"Mancini\",\"Ferrara\",\"Leão\",\"Colombo\",\"Santoro\",\"Conti\",\"Coppola\",\"Amato\",\"Bianco\",\"Vitale\",\"Lombardi\",\"Fiore\",\"Parisi\",\"De Rosa\",\"DAngelo\",\"Rinaldi\",\"De Santis\",\"Lombardo\",\"Martini\",\"Longo\",\"Serra\",\"Gentile\",\"Giuseppe\",\"Sorrentino\",\"Moretti\",\"De Angelis\",\"Fontana\",\"Napoli\",\"Valenti\",\"Rossini\",\"Benedetti\",\"Manca\",\"Pinto De Martino\",\"Pugliese\",\"Natale\",\"Rosso\",\"Palma\",\"Moro\",\"Bernardi\"];",
+							"",
+							"",
+							"    let randomItem = lastName[Math.floor(Math.random() * lastName.length)];",
+							"",
+							"      return randomItem;",
+							"    ",
+							"}",
+							" ",
+							"pm.environment.set(\"LastName\", lastName());",
+							"",
+							"pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));",
+							"",
+							"function accessProfile() {",
+							"",
+							"    let accessProfile = [\"ADMIN\"];",
+							"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];",
+							"",
+							"      return randomItem;",
+							"",
+							"}",
+							" pm.environment.set(\"AccessProfile\", accessProfile());",
+							"",
+							"function providerMail() {",
+							"",
+							"    let providerMail = [\"@yahoo.com.br\", \"@gmail.com\",\"@outlook.com\",\"@hotmail.com\",\"@uol.com.br\"];",
+							"    let randomItem = providerMail[Math.floor(Math.random() * providerMail.length)];",
+							"",
+							"      return randomItem;",
+							"",
+							"}",
+							"",
+							"pm.environment.set(\"ProviderMail\", providerMail());",
+							"pm.environment.set(\"Mail\", pm.environment.get(\"FirstName\") + \"_\" + pm.variables.replaceIn('{{$guid}}') + pm.environment.get(\"ProviderMail\"));",
+							"",
+							"function cpf() {",
+							"    let cpf = '';",
+							"",
+							"    for (let i = 0; i < 9; i++) {",
+							"        cpf += Math.floor(Math.random() * 10);",
+							"    }",
+							"",
+							"    let sum = 0;",
+							"    let weight = 10;",
+							"",
+							"    for (let i = 0; i < 9; i++) {",
+							"        sum += parseInt(cpf[i]) * weight;",
+							"        weight--;",
+							"    }",
+							"",
+							"    let digit1 = 11 - (sum % 11);",
+							"    if (digit1 === 10 || digit1 === 11) {",
+							"        digit1 = 0;",
+							"    }",
+							"",
+							"    cpf += digit1;",
+							"",
+							"    sum = 0;",
+							"    weight = 11;",
+							"",
+							"    for (let i = 0; i < 10; i++) {",
+							"        sum += parseInt(cpf[i]) * weight;",
+							"        weight--;",
+							"    }",
+							"",
+							"    let digit2 = 11 - (sum % 11);",
+							"    if (digit2 === 10 || digit2 === 11) {",
+							"        digit2 = 0;",
+							"    }",
+							"",
+							"    cpf += digit2;",
+							"",
+							"    return cpf;",
+							"}",
+							"",
+							"pm.environment.set(\"CPF\", cpf());",
+							"",
+							"pm.variables.set(\"_Password\", pm.globals.get(\"Password\"))"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"check is fullName true\", function(){",
+							"    pm.expect(pm.environment.get(\"FullName\")).to.eql(JSON.parse(responseBody).user.fullName);",
+							"})",
+							"",
+							"pm.test(\"check is mail true\", function(){",
+							"    pm.expect(pm.environment.get(\"Mail\")).to.eql(JSON.parse(responseBody).user.mail);",
+							"})",
+							"",
+							"pm.test(\"check is accessProfile true\", function(){",
+							"    pm.expect(pm.environment.get(\"AccessProfile\")).to.eql(JSON.parse(responseBody).user.accessProfile);",
+							"})",
+							"",
+							"pm.test(\"check is cpf true\", function(){",
+							"    pm.expect(pm.environment.get(\"CPF\")).to.eql (JSON.parse(responseBody).user.cpf);",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fullName\": \"{{FullName}}\",\n    \"mail\": \"{{Mail}}\",\n    \"password\": \"{{_Password}}\",\n    \"confirmPassword\": \"{{_Password}}\",\n    \"accessProfile\": \"{{AccessProfile}}\",\n    \"cpf\": \"{{CPF}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{token}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
