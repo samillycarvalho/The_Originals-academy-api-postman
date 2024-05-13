@@ -15,7 +15,7 @@ Projeto de teste de api do Academy T11.
   npm install -g newman-reporter-htmlextra
 
 ```
-## Execução com Newman
+ Execução com Newman
 
 ```bash
  newman run users.json -e QA.json -g globals.json 
