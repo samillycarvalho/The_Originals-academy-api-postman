@@ -5,7 +5,6 @@ Projeto de teste de api do Academy T11.
 ## Tecnologias utilizadas
 
 - postman
-- Swagger
 - Git 
 - Nodejs
 - newman
@@ -60,3 +59,6 @@ Clone o repositório
 ```        
 ## Projeto desenvolvido por:
 - [@samillycarvalho](https://www.linkedin.com/in/s%C3%A2milly-carvalho-444638226/)
+- [@TainaLourenco](https://www.linkedin.com/in/taina-louren%C3%A7o-costa-da-silva/)
+- [@WalterJorge](https://www.linkedin.com/in/walter-jorge-5079915a/)
+- [@EduardoNunes](https://www.linkedin.com/in/eduardonunesdossantos/)
