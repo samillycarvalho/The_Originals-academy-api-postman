@@ -10,11 +10,13 @@ Projeto de teste de api do Academy T11.
 - newman
 
 ### Instalando as dependencias
-  npm install -g newman
+```bash
+   npm install -g newman
   npm install -g newman-reporter-htmlextra
 
 ```
- Execução com Newman
+
+## Execução com Newman
 
 ```bash
  newman run users.json -e QA.json -g globals.json 
@@ -30,7 +32,7 @@ Projeto de teste de api do Academy T11.
 No Git e Github, realize as etapas abaixo:
 Clone o repositório
 ```bash
- git clone
+ git clone git@github.com:samillycarvalho/The_Originals-academy-api-postman.git
 
 ```
 ##### Verifique se há alterações no repositório git para baixar ao repositório local
@@ -62,3 +64,5 @@ Clone o repositório
 - [@TainaLourenco](https://www.linkedin.com/in/taina-louren%C3%A7o-costa-da-silva/)
 - [@WalterJorge](https://www.linkedin.com/in/walter-jorge-5079915a/)
 - [@EduardoNunes](https://www.linkedin.com/in/eduardonunesdossantos/)
+### Tech lead
+Luis Eduardo
